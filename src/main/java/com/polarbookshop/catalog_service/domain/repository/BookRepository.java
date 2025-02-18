@@ -1,4 +1,6 @@
-package com.polarbookshop.catalog_service.domain;
+package com.polarbookshop.catalog_service.domain.repository;
+
+import com.polarbookshop.catalog_service.domain.entity.Book;
 
 import java.util.Optional;
 
