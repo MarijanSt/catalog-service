@@ -4,6 +4,7 @@ import com.polarbookshop.catalog_service.domain.exception.BookAlreadyExistsExcep
 import com.polarbookshop.catalog_service.domain.exception.BookNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @ControllerAdvice
 public class BookControllerAdvice {
@@ -29,13 +31,14 @@ public class BookControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String,String> methodArgumentNotValidException(MethodArgumentNotValidException exception) {
+    public String methodArgumentNotValidException(MethodArgumentNotValidException exception) {
         Map<String, String> notValidParametersErrors = new HashMap<>();
         exception.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             notValidParametersErrors.put(fieldName, errorMessage);
         });
-        return notValidParametersErrors;
+        Optional<String> finalError = notValidParametersErrors.values().stream().reduce((a,b) -> a + b);
+        return finalError.orElse("No parameter error");
     }
 }

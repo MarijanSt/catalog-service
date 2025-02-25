@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("books")
+@RequestMapping("books/")
 public class BookController {
 
     private final BookService bookService;
@@ -28,8 +28,9 @@ public class BookController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Book post(@Valid @RequestBody Book book) {//Enforce validation with @Valid
-        return bookService.addBookToCatalog(book);
+    public String post(@Valid @RequestBody Book book) {//Enforce validation with @Valid
+        Book theBookCreated = bookService.addBookToCatalog(book);
+        return book.isbn();
     }
 
     @DeleteMapping("{isbn}")
